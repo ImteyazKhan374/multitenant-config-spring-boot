@@ -41,7 +41,6 @@ public class MultiTenantConfig {
 		// Create default tenant DataSource
 		DataSource defaultDataSource = createDataSourceForTenant("defaultdb");
 		tenantDataSources.put("defaultdb", defaultDataSource);
-		//TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
 		routingDataSource.setTargetDataSources(tenantDataSources);
 		routingDataSource.afterPropertiesSet();
 
