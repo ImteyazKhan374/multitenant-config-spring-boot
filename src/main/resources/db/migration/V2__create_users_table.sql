@@ -1,0 +1,6 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    status TINYINT(1) DEFAULT 0
+);
