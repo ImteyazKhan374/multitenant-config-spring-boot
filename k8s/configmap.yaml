@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unison-service-config
+data:
+  SPRING_PROFILES_ACTIVE: dev
+  DB_HOST: mysql

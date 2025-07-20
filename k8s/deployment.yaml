@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unison-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: unison-service
+  template:
+    metadata:
+      labels:
+        app: unison-service
+    spec:
+      containers:
+        - name: unison-service
+          image: unison-service:latest # It's generally better to use a specific tag, e.g., unison-service:1.0.0
+          imagePullPolicy: Never # Corrected indentation
+          ports:
+            - containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: unison-service-config
