@@ -159,7 +159,10 @@ docker build -t unison-service:latest .
 
 Apply the following YAML files from your `k8s` folder:
 
+
 ```bash
+use 'kubectl create secret generic unison-vault-secrets --from-literal=SPRING_CLOUD_VAULT_TOKEN=root' to create vault token encrypted format
+
 kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
