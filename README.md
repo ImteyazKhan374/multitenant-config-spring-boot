@@ -109,22 +109,23 @@ Install MySQL on your Windows system via installer from [https://dev.mysql.com/d
 
 ```yaml
 spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000  # 10 minutes in milliseconds
+      cache-null-values: false
+      key-prefix: true
+
   redis:
     host: localhost
     port: 6379
     timeout: 60000
 
-  cache:
-    type: redis
-    redis:
-      time-to-live: 600000
-      cache-null-values: false
-      key-prefix: true
-
   cloud:
     vault:
-      uri: http://host.docker.internal:8200
-      token: root
+      #uri: http://host.docker.internal:8200
+      uri: http://localhost:8200
+      token: root     # Replace with actual token in production
       authentication: TOKEN
       kv:
         enabled: true
@@ -135,10 +136,13 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-    fetch-registry: true
+    fetch-registry: false
     register-with-eureka: false
   instance:
     hostname: localhost
+#    prefer-ip-address: true
+#    ip-address: 127.0.0.1
+#    instance-id: ${spring.application.name}:${server.port}
 ```
 
 ---

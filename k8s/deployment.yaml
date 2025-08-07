@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: unison-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: unison-service
@@ -14,10 +14,19 @@ spec:
     spec:
       containers:
         - name: unison-service
-          image: unison-service:latest # It's generally better to use a specific tag, e.g., unison-service:1.0.0
-          imagePullPolicy: Never # Corrected indentation
+          image: unison:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9090
           envFrom:
             - configMapRef:
                 name: unison-service-config
+            - secretRef:
+                name: unison-vault-secrets
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

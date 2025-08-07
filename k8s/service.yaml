@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     app: unison-service
-  type: NodePort  # <<< CHANGE THIS
+  type: NodePort
   ports:
     - port: 9090         # Internal service port
       targetPort: 9090   # Container port
