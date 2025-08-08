@@ -1,9 +1,8 @@
 pipeline {
-    agent any
-
-    environment {
-        // You can keep environment variables if needed later
-        IMAGE_NAME = 'unison-service'
+    agent {
+        docker {
+            image 'maven:3.9.6-eclipse-temurin-17' // or use the version matching your project
+        }
     }
 
     stages {
