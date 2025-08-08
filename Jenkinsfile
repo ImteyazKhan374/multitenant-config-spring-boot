@@ -30,28 +30,25 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 bat "docker build -t ${FULL_IMAGE} ."
-                // Optional push
+                // Optional: push to registry
                 // bat "docker push ${FULL_IMAGE}"
             }
         }
 
         stage('Deploy to Kubernetes') {
-    steps {
-        withEnv(["KUBECONFIG=C:\\Users\\imtey\\.kube\\config"]) {
-            script {
-                def imageTag = "${BUILD_TAG}"
-                
-                // Replace placeholder with actual image tag
-                bat "powershell -Command \"(Get-Content k8s/deployment.yaml) -replace '__IMAGE_TAG__', '${imageTag}' | Set-Content k8s/deployment-tagged.yaml\""
-
-                // Apply the updated YAML
-                bat 'kubectl apply -f k8s/configmap.yaml'
-                bat 'kubectl apply -f k8s/service.yaml'
-                bat 'kubectl apply -f k8s/deployment-tagged.yaml'
+            steps {
+                withEnv(["KUBECONFIG=C:\\Users\\imtey\\.kube\\config"]) {
+                    script {
+                        def imageTag = "${BUILD_TAG}"
+                        bat "powershell -Command \"(Get-Content k8s/deployment.yaml) -replace '__IMAGE_TAG__', '${imageTag}' | Set-Content k8s/deployment-tagged.yaml\""
+                        bat 'kubectl apply -f k8s/configmap.yaml'
+                        bat 'kubectl apply -f k8s/service.yaml'
+                        bat 'kubectl apply -f k8s/deployment-tagged.yaml'
+                    }
+                }
             }
         }
     }
-}
 
     post {
         success {
