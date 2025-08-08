@@ -1,8 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.6-eclipse-temurin-17'
-        }
+    agent any
+
+    environment {
+        IMAGE_NAME = 'unison-service'
     }
 
     stages {
@@ -12,9 +12,8 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build with Maven') {
             steps {
-                sh 'mvn -version'
                 sh 'mvn clean package -DskipTests'
             }
         }
