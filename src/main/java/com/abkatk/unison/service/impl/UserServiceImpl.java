@@ -1,6 +1,8 @@
 package com.abkatk.unison.service.impl;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,10 +38,13 @@ public class UserServiceImpl implements UserService {
 		if (id == null) {
 			throw new IllegalArgumentException("User ID cannot be null");
 		}
-		if (!userRepository.existsById(id)) {
+		
+		Optional<User> userOptional = userRepository.findById(id);
+		if (!userOptional.isPresent()) {
 			throw new ResourceNotFound("User not found with ID: " + id);
 		}
+		
 		// Using get() to retrieve the user, as we know it exists due to the previous check
-		return userRepository.findById(id).get();
+		return userOptional.get();
 	}
 }
