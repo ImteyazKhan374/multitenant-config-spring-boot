@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'M3'
+        maven 'M3'  // This must match exactly with the name you set in Jenkins UI
     }
 
     stages {
@@ -14,6 +14,8 @@ pipeline {
 
         stage('Build') {
             steps {
+                // Use the Maven tool explicitly
+                sh 'mvn -version'  // just to verify Maven is correctly loaded
                 sh 'mvn clean package -DskipTests'
             }
         }
