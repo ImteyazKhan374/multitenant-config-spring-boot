@@ -34,7 +34,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
+				 withEnv(["KUBECONFIG=C:\\Users\\imtey\\.kube\\config"]) {
+               // script {
                     bat 'kubectl apply -f k8s/configmap.yaml'
                     bat 'kubectl apply -f k8s/service.yaml'
                     bat 'kubectl apply -f k8s/deployment.yaml'
