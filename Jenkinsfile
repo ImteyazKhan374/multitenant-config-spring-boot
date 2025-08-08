@@ -1,8 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.6-eclipse-temurin-17' // or use the version matching your project
-        }
+    agent any
+
+    tools {
+        maven 'M3'
     }
 
     stages {
