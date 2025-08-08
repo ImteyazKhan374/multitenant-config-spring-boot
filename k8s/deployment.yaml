@@ -2,27 +2,58 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: unison-service
+  labels:
+    app: unison-service
+    tier: backend
 spec:
-  replicas: 1
+  replicas: 2  # Minimum 2 for HA
+  revisionHistoryLimit: 3  # Controls how many old ReplicaSets are retained
   selector:
     matchLabels:
       app: unison-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app: unison-service
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"  # For monitoring
+        prometheus.io/port: "9090"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
       containers:
         - name: unison-service
-          image: unison-service:__IMAGE_TAG__
+          image: unison-service:${IMAGE_TAG}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 9090
+            - name: http
+              containerPort: 9090
+              protocol: TCP
           envFrom:
             - configMapRef:
                 name: unison-service-config
             - secretRef:
                 name: unison-vault-secrets
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9090
+            initialDelaySeconds: 45
+            periodSeconds: 15
           resources:
             requests:
               cpu: "200m"
@@ -30,3 +61,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

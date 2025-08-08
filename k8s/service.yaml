@@ -2,11 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: unison-service
+  labels:
+    app: unison-service
+    tier: backend
 spec:
   selector:
     app: unison-service
-  type: NodePort
+  type: ClusterIP 
   ports:
-    - port: 9090         # Internal service port
-      targetPort: 9090   # Container port
-      nodePort: 30090    # <<< Exposed on localhost:30090
+    - name: http
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  sessionAffinity: None
