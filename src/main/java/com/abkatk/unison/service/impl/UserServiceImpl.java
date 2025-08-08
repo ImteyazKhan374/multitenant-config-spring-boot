@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
 			throw new ResourceNotFound("User not found with ID: " + id);
 		}
 		
-		// Using get() to retrieve the user, as we know it exists due to the previous check
 		return userOptional.get();
 	}
 }
