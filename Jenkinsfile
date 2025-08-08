@@ -1,8 +1,8 @@
 pipeline {
-    agent any
-
-    tools {
-        maven 'M3'  // This must match exactly with the name you set in Jenkins UI
+    agent {
+        docker {
+            image 'maven:3.9.6-eclipse-temurin-17'
+        }
     }
 
     stages {
@@ -14,8 +14,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Use the Maven tool explicitly
-                sh 'mvn -version'  // just to verify Maven is correctly loaded
+                sh 'mvn -version'
                 sh 'mvn clean package -DskipTests'
             }
         }
