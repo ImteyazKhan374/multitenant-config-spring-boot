@@ -17,5 +17,30 @@ pipeline {
                 bat 'mvn clean package -DskipTests'
             }
         }
+        
+        stage('Archive JAR') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def image = docker.build("${IMAGE_NAME}", '-f Dockerfile .')
+                    image.push()
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh 'kubectl apply -f k8s/configmap.yaml'
+                    sh 'kubectl apply -f k8s/service.yaml'
+                    sh 'kubectl apply -f k8s/deployment.yaml'
+                }
+            }
+        }
     }
 }
