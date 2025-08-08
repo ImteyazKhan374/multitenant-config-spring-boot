@@ -24,14 +24,13 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    def image = docker.build("${IMAGE_NAME}", '-f Dockerfile .')
-                    image.push()
-                }
-            }
-        }
+		stage('Build Docker Image') {
+		    steps {
+		        bat "docker build -t ${IMAGE_NAME} ."
+		        bat "docker push ${IMAGE_NAME}"
+		    }
+		}
+
 
         stage('Deploy to Kubernetes') {
             steps {
