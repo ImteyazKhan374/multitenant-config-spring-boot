@@ -25,6 +25,9 @@ unison/
 * Java 17+ and Maven
 * MySQL installed locally on Windows
 * Redis and Vault (run via Docker, see below)
+* Jenkins installed locally (or via Docker Optional)
+* SonarQube running locally (or via Docker Optional)
+* Ngrok running locally (optional)
 
 ---
 
@@ -90,6 +93,72 @@ curl --header "X-Vault-Token: root" --request POST --data '{
 }' http://localhost:8200/v1/secret/data/unison
 ```
 
+### Jenkins
+
+```bash
+docker run -u root --name jenkins -d -p 9999:9999 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+or download the jenkins for windows and run on 9999
+```
+
+Install plugins:
+
+* Pipeline
+* Git
+* SonarQube Scanner
+* Docker Pipeline
+
+
+
+Access Jenkins: http://localhost:999
+Find the initial password under C:\ProgramData\Jenkins\.jenkins\secrets\initialAdminPassword and setup the rest
+
+
+### SonarQube
+
+```bash
+docker run --name sonarqube -d -p 9000:9000 sonarqube:lts
+```
+Access SonarQube: http://localhost:9000
+Default credentials: admin/admin
+
+### ngrok
+
+* download ngrok
+* Log in to  ngrok to your account and find your authtoken
+
+```bash
+Run this in your terminal:
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+Example:
+ngrok config add-authtoken 2FJp0xxxxx_xxxxxxxx
+```
+
+* Expose Jenkins via ngrok
+
+
+```bash
+
+ngrok http 9999
+You’ll get a public URL like: https://2f34-103-78-55-101.ngrok-free.app
+Whenever you try to access https://2f34-103-78-55-101.ngrok-free.app will point to your local jenkins running on 9999
+```
+
+* Enable GitHub webhook in Jenkins
+
+
+```bash
+In Jenkins job → Configure → Build Triggers → ✔ GitHub hook trigger for GITScm polling.
+```
+
+* Add webhook in GitHub
+
+```bash
+Go to Settings under your repo → Webhooks → Add webhook.
+Payload URL:
+https://2f34-103-78-55-101.ngrok-free.app/github-webhook/ (generated using ngrok http 9999)
+Content type: application/json
+Events: "Just the push event"
+```
 ---
 
 ## 📂 MySQL (Native Installation)
@@ -214,5 +283,3 @@ kubectl delete -f k8s/
 * ✅ Redis used for caching
 * ✅ MySQL installed and connected
 * ✅ Vault secrets work both in local and K8s via different payload values
-
-Let me know if you'd like to integrate MongoDB, RabbitMQ, Jenkins, or Prometheus/Grafana next.
