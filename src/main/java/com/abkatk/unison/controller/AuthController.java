@@ -17,8 +17,8 @@ import com.abkatk.unison.util.JwtUtil;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtUtil jwtUtil;
