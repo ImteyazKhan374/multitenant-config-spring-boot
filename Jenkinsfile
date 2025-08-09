@@ -28,7 +28,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([string(credentialsId: 'sqa_663d3b5ea9e2cae1aa80e9d72ce675bed64d1cb5', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     bat """
                         mvn sonar:sonar ^
                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
