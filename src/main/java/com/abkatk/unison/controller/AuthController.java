@@ -29,6 +29,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
+    			// Authenticate the user
+		// This will throw an exception if the credentials are invalid
+		// Uncomment the following lines if you want to use authenticationManager
 //        authenticationManager.authenticate(
 //            new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
 //        );
@@ -36,11 +39,6 @@ public class AuthController {
        // final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
         final String jwt = jwtUtil.generateToken(authRequest);
         return ResponseEntity.ok(jwt);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Access granted to secured endpoint");
     }
 }
 
