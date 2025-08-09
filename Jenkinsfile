@@ -6,6 +6,11 @@ pipeline {
         BUILD_TAG = "${env.BUILD_NUMBER}"
         FULL_IMAGE = "unison-service:${BUILD_TAG}"
         KUBECONFIG = 'C:\\Users\\imtey\\.kube\\config'
+
+        // 🔹 SonarQube settings
+        SONAR_HOST_URL = 'http://localhost:9000'   // Replace with your SonarQube URL
+        SONAR_PROJECT_KEY = 'unison-service'       // Must match your Sonar project key
+        SONAR_PROJECT_NAME = 'Unison Service'
     }
 
     stages {
@@ -18,6 +23,20 @@ pipeline {
         stage('Build with Maven') {
             steps {
                 bat 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sqa_663d3b5ea9e2cae1aa80e9d72ce675bed64d1cb5', variable: 'SONAR_TOKEN')]) {
+                    bat """
+                        mvn sonar:sonar ^
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
+                            -Dsonar.projectName="${SONAR_PROJECT_NAME}" ^
+                            -Dsonar.host.url=${SONAR_HOST_URL} ^
+                            -Dsonar.login=%SONAR_TOKEN%
+                    """
+                }
             }
         }
 
@@ -43,7 +62,6 @@ pipeline {
                         bat "powershell -Command \"(Get-Content k8s/deployment.yaml) -replace '__IMAGE_TAG__', '${imageTag}' | Set-Content k8s/deployment-tagged.yaml\""
                         bat 'kubectl apply -f k8s/configmap.yaml'
                         bat 'kubectl apply -f k8s/service.yaml'
-                        bat 'kubectl apply -f k8s/deployment-tagged.yaml'
                     }
                 }
             }
